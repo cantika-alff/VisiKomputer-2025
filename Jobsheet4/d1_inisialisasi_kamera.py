@@ -1,0 +1,34 @@
+import cv2
+import time
+
+# Membuka kamera default (index 0)
+cap = cv2.VideoCapture(0)
+
+# Cek apakah kamera berhasil dibuka
+if not cap.isOpened():
+    raise RuntimeError("Kamera tidak bisa dibuka. Coba gunakan index 1 atau 2.")
+
+frames, t0 = 0, time.time()
+
+while True:
+    ok, frame = cap.read()
+    if not ok:
+        break
+
+    frames += 1
+
+    # Hitung FPS setiap 1 detik
+    if time.time() - t0 >= 1.0:
+        cv2.setWindowTitle("Preview", f"Preview (FPS ~ {frames})")
+        frames, t0 = 0, time.time()
+
+    # Tampilkan hasil kamera
+    cv2.imshow("Preview", frame)
+
+    # Tekan 'q' untuk keluar
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Tutup semua jendela dan kamera
+cap.release()
+cv2.destroyAllWindows()
